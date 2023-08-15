@@ -49,6 +49,13 @@ unpacked_map = parser.unpack_map(raw_map)
 parsed_map = parser.parse(unpacked_map)
 ```
 
+## Special thanks
+
+This library wouldn't exist without following projects:
+ - [openHAB miIO add-on](https://github.com/openhab/openhab-addons/tree/main/bundles/org.openhab.binding.miio/src/main/java/org/openhab/binding/miio) by [@marcelrv](https://github.com/marcelrv)
+ - [Xiaomi Robot Vacuum Protocol](https://github.com/marcelrv/XiaomiRobotVacuumProtocol) by [@marcelrv](https://github.com/marcelrv)
+
+
 <!-- piotrmachowski_support_links_start -->
 
 ## Support

@@ -8,19 +8,19 @@ on:
 
 jobs:
   code_quality:
-    name: Code Quality
+    name: ${{ matrix.name }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
         include:
           - id: black
-            name: Check code style with black
+            name: Check code with black
           - id: isort
-            name: Check if imports are sorted with isort
+            name: Check code with isort
           - id: pylint
             name: Check code with pylint
           - id: mypy
-            name: Check code with pylint
+            name: Check code with mypy
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v3

@@ -1,0 +1,72 @@
+[tool.poetry]
+name = "vacuum-map-parser-roborock"
+# The version is set by GH action on release
+version = "0.0.0"
+license = "Apache-2.0"
+description = "Functionalities for Roborock vacuum map parsing"
+readme = "README.md"
+authors = ["Piotr Machowski <piotr.machowski.dev@gmail.com>"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Environment :: Console",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Home Automation",
+]
+packages = [
+    { include = "vacuum_map_parser_roborock", from = "src" },
+]
+
+[tool.poetry.urls]
+"Homepage" = "https://github.com/PiotrMachowski/Python-package-vacuum-map-parser-roborock"
+"Repository" = "https://github.com/PiotrMachowski/Python-package-vacuum-map-parser-roborock"
+"Bug Tracker" = "https://github.com/PiotrMachowski/Python-package-vacuum-map-parser-roborock/issues"
+"Changelog" = "https://github.com/PiotrMachowski/Python-package-vacuum-map-parser-roborock/releases"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+Pillow = "*"
+vacuum-map-parser-base = "0.1.1"
+
+[tool.poetry.dev-dependencies]
+black = "*"
+mypy = "*"
+ruff = "*"
+isort = "*"
+pylint = "*"
+types-Pillow = "*"
+
+[tool.black]
+line-length = 120
+
+[tool.isort]
+profile = "black"
+line_length = 120
+
+[tool.mypy]
+platform = "linux"
+
+check_untyped_defs = true
+disallow_any_generics = true
+disallow_incomplete_defs = true
+disallow_subclassing_any = true
+disallow_untyped_calls = true
+disallow_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+no_implicit_reexport = true
+strict_optional = true
+warn_incomplete_stub = true
+warn_no_return = true
+warn_redundant_casts = true
+warn_return_any = true
+warn_unused_configs = true
+warn_unused_ignores = true
+
+[tool.pylint]
+disable = ["C0103", "C0116", "R0902", "R0903", "R0912", "R0913", "R0914", "R0915", "W0640"]
+max-line-length = 120
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

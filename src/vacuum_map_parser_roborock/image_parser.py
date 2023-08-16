@@ -1,4 +1,4 @@
-"""Roborock image parser."""
+"""Roborock map image parser."""
 
 import logging
 

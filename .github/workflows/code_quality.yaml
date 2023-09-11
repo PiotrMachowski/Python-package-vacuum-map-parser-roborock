@@ -23,7 +23,7 @@ jobs:
             name: Check code with mypy
     steps:
       - name: Checkout the repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python 3
         uses: actions/setup-python@v4

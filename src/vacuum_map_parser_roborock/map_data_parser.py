@@ -59,11 +59,21 @@ class RoborockMapDataParser(MapDataParser):
 
     KNOWN_OBSTACLE_TYPES = {
         0: "cable",
+        1: "pet waste",
         2: "shoes",
         3: "poop",
+        4: "pedestal",
         5: "extension cord",
         9: "weighting scale",
         10: "clothes",
+        25: "dustpan",
+        26: "furniture with a crossbar",
+        27: "furniture with a crossbar",
+        34: "clothes",
+        48: "cable",
+        49: "pet",
+        50: "pet",
+        51: "fabric/paper balls",
     }
 
     def __init__(

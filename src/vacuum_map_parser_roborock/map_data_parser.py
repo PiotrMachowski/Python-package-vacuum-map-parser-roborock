@@ -76,7 +76,7 @@ class RoborockMapDataParser(MapDataParser):
         51: "fabric/paper balls",
     }
 
-    def __init__(
+    def __init__( # pylint: disable=R0917
         self,
         palette: ColorsPalette,
         sizes: Sizes,
@@ -181,11 +181,11 @@ class RoborockMapDataParser(MapDataParser):
             and img_header_length is not None
         ):
             image, rooms = self._parse_image(
-                img_data_length,
-                img_header_length,
-                img_data,
-                img_header,
-                map_data.carpet_map,
+                block_data_length=img_data_length,
+                block_header_length=img_header_length,
+                data=img_data,
+                header=img_header,
+                carpet_map=map_data.carpet_map,
             )
             map_data.image = image
             map_data.rooms = rooms
@@ -213,6 +213,7 @@ class RoborockMapDataParser(MapDataParser):
 
     def _parse_image(
         self,
+        *,
         block_data_length: int,
         block_header_length: int,
         data: bytes,

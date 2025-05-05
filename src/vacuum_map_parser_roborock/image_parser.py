@@ -36,13 +36,12 @@ class RoborockImageParser:
         trim_bottom = int(self._image_config.trim.bottom * height / 100)
         trimmed_height = height - trim_top - trim_bottom
         trimmed_width = width - trim_left - trim_right
-        trimmed_left_width = trim_left + width
         image = Image.new("RGBA", (trimmed_width, trimmed_height))
         if width == 0 or height == 0:
             return None, {}
         pixels = image.load()
         for img_y in range(trimmed_height):
-            img_x_offset = trimmed_left_width * (img_y + trim_bottom)
+            img_x_offset = trim_left + width * (img_y + trim_bottom)
             for img_x in range(trimmed_width):
                 idx = img_x + img_x_offset
                 pixel_type = raw_data[idx]

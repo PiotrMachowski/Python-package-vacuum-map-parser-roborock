@@ -24,7 +24,7 @@ class RoborockImageParser:
         self._image_config = image_config
 
     def parse(
-        self, raw_data: bytes, width: int, height: int, carpet_map: set[int] | None
+        self, raw_data: bytes, width: int, height: int, carpet_map: set[int] | None, removed_map: set[int] | None = None
     ) -> tuple[ImageType | None, dict[int, tuple[int, int, int, int]]]:
         rooms = {}
         scale = self._image_config.scale
@@ -47,7 +47,9 @@ class RoborockImageParser:
                 pixel_type = raw_data[idx]
                 x = img_x
                 y = trimmed_height - img_y - 1
-                if carpet_map is not None and idx in carpet_map and (x + y) % 2:
+                if removed_map is not None and idx in removed_map:
+                    pixels[x, y] = cached_colors[SupportedColor.MAP_OUTSIDE]
+                elif carpet_map is not None and idx in carpet_map and (x + y) % 2:
                     pixels[x, y] = cached_colors[SupportedColor.CARPETS]
                 elif pixel_type == RoborockImageParser.MAP_OUTSIDE:
                     pixels[x, y] = cached_colors[SupportedColor.MAP_OUTSIDE]

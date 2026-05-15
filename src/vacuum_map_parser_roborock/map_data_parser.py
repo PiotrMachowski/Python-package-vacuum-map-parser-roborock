@@ -280,13 +280,16 @@ class RoborockMapDataParser(MapDataParser):
         carpet_map: set[int] = set()
         removed_map: set[int] = set()
         for i, v in enumerate(data):
-            if  v == RoborockSubmapType.CARPET.value:
+            if v & RoborockSubmapType.CARPET.value:
                 carpet_map.add(i)
-            elif v == RoborockSubmapType.REMOVED_BORDER.value:
+            if (v & RoborockSubmapType.REMOVED_BORDER.value) or (v & RoborockSubmapType.REMOVED_AREA.value):
                 removed_map.add(i)
-            elif v == RoborockSubmapType.REMOVED_AREA.value:
-                removed_map.add(i)
-            elif v != 0:
+            known_bits = (
+                RoborockSubmapType.CARPET.value
+                | RoborockSubmapType.REMOVED_BORDER.value
+                | RoborockSubmapType.REMOVED_AREA.value
+            )
+            if v & ~known_bits:
                 _LOGGER.debug("UNKNOWN SUBMAP TYPE: %d", v)
         return carpet_map, removed_map
 

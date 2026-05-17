@@ -48,11 +48,18 @@ class RoborockBlockType(Enum):
     IGNORED_OBSTACLES = 14
     OBSTACLES_WITH_PHOTO = 15
     IGNORED_OBSTACLES_WITH_PHOTO = 16
-    CARPET_MAP = 17
+    CARPET_MAP = 17 # Keep for backward compatibility
+    SUBMAP = 17
     MOP_PATH = 18
     NO_CARPET_AREAS = 19
     DIGEST = 1024
 
+class RoborockSubmapType(Enum):
+    """Roborock map block type."""
+
+    CARPET = 1
+    REMOVED_BORDER = 8
+    REMOVED_AREA = 16
 
 class RoborockMapDataParser(MapDataParser):
     """Roborock map parser."""
@@ -157,10 +164,11 @@ class RoborockMapDataParser(MapDataParser):
                     # only the map_data.path points where points_mask == 1 are in mop_path
                     if map_data.path is not None:
                         map_data.mop_path = RoborockMapDataParser._parse_mop_path(map_data.path, points_mask)
-                case RoborockBlockType.CARPET_MAP.value:
+                case RoborockBlockType.SUBMAP.value:
                     data = RoborockMapDataParser._get_bytes(raw, block_data_start, block_data_length)
-                    # only the indexes where value == 1 are in carpet_map
-                    map_data.carpet_map = RoborockMapDataParser._parse_carpet_map(data)
+                    map_data.carpet_map, map_data.additional_parameters["removed_map"] = (
+                        RoborockMapDataParser._parse_submap(data)
+                    )
                 case RoborockBlockType.NO_CARPET_AREAS.value:
                     map_data.no_carpet_areas = RoborockMapDataParser._parse_area(header, data)
                 case _:
@@ -186,6 +194,7 @@ class RoborockMapDataParser(MapDataParser):
                 data=img_data,
                 header=img_header,
                 carpet_map=map_data.carpet_map,
+                removed_map=map_data.additional_parameters.get("removed_map"),
             )
             map_data.image = image
             map_data.rooms = rooms
@@ -219,13 +228,14 @@ class RoborockMapDataParser(MapDataParser):
         data: bytes,
         header: bytes,
         carpet_map: set[int] | None,
+        removed_map: set[int] | None = None,
     ) -> tuple[ImageData, dict[int, Room]]:
         image_size = block_data_length
         image_top = RoborockMapDataParser._get_int32(header, block_header_length - 16)
         image_left = RoborockMapDataParser._get_int32(header, block_header_length - 12)
         image_height = RoborockMapDataParser._get_int32(header, block_header_length - 8)
         image_width = RoborockMapDataParser._get_int32(header, block_header_length - 4)
-        image, rooms_raw = self._image_parser.parse(data, image_width, image_height, carpet_map)
+        image, rooms_raw = self._image_parser.parse(data, image_width, image_height, carpet_map, removed_map)
         if image is None:
             image = self._image_generator.create_empty_map_image()
         rooms = {}
@@ -266,13 +276,22 @@ class RoborockMapDataParser(MapDataParser):
         return room
 
     @staticmethod
-    def _parse_carpet_map(data: bytes) -> set[int]:
-        carpet_map = set()
-
+    def _parse_submap(data: bytes) -> tuple[set[int], set[int]]:
+        carpet_map: set[int] = set()
+        removed_map: set[int] = set()
         for i, v in enumerate(data):
-            if v:
+            if v & RoborockSubmapType.CARPET.value:
                 carpet_map.add(i)
-        return carpet_map
+            if (v & RoborockSubmapType.REMOVED_BORDER.value) or (v & RoborockSubmapType.REMOVED_AREA.value):
+                removed_map.add(i)
+            known_bits = (
+                RoborockSubmapType.CARPET.value
+                | RoborockSubmapType.REMOVED_BORDER.value
+                | RoborockSubmapType.REMOVED_AREA.value
+            )
+            if v & ~known_bits:
+                _LOGGER.debug("UNKNOWN SUBMAP TYPE: %d", v)
+        return carpet_map, removed_map
 
     @staticmethod
     def _parse_goto_target(data: bytes) -> Point:

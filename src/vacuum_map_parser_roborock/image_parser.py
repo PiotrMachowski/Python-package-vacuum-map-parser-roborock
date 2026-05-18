@@ -23,7 +23,7 @@ class RoborockImageParser:
         self._colors_palette = palette
         self._image_config = image_config
 
-    def parse(
+    def parse( # pylint: disable=R0917
         self, raw_data: bytes, width: int, height: int, carpet_map: set[int] | None, removed_map: set[int] | None = None
     ) -> tuple[ImageType | None, dict[int, tuple[int, int, int, int]]]:
         rooms = {}

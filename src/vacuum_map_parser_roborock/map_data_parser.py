@@ -240,12 +240,19 @@ class RoborockMapDataParser(MapDataParser):
             image = self._image_generator.create_empty_map_image()
         rooms = {}
         for number, room in rooms_raw.items():
+            x0 = RoborockMapDataParser._image_to_map(room[0] + image_left)
+            y0 = RoborockMapDataParser._image_to_map(room[1] + image_top)
+            x1 = RoborockMapDataParser._image_to_map(room[2] + image_left)
+            y1 = RoborockMapDataParser._image_to_map(room[3] + image_top)
             rooms[number] = Room(
-                RoborockMapDataParser._image_to_map(room[0] + image_left),
-                RoborockMapDataParser._image_to_map(room[1] + image_top),
-                RoborockMapDataParser._image_to_map(room[2] + image_left),
-                RoborockMapDataParser._image_to_map(room[3] + image_top),
+                x0,
+                y0,
+                x1,
+                y1,
                 number,
+                name=str(number),
+                pos_x=(x0 + x1) / 2,
+                pos_y=(y0 + y1) / 2,
             )
         return (
             ImageData(

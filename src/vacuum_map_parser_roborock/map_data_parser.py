@@ -341,7 +341,7 @@ class RoborockMapDataParser(MapDataParser):
                     u1 = RoborockMapDataParser._get_int16(data, obstacle_start + 6)
                     u2 = RoborockMapDataParser._get_int16(data, obstacle_start + 8)
                     details.confidence_level = 0 if u2 == 0 else u1 * 10.0 / u2
-                    if obstacle_size == 28 and (data[obstacle_start + 12] & 0xFF) > 0:
+                    if obstacle_size >= 28 and (data[obstacle_start + 12] & 0xFF) > 0:
                         txt = RoborockMapDataParser._get_bytes(data, obstacle_start + 12, 16)
                         details.photo_name = txt.decode("ascii")
             obstacles.append(Obstacle(x, y, details))

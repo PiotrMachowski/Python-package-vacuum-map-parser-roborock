@@ -102,7 +102,7 @@ class RoborockImageParser:
             return None
         pixel_type = raw_data[x + width * y]
         if pixel_type not in [RoborockImageParser.MAP_INSIDE, RoborockImageParser.MAP_SCAN]:
-            if (pixel_type & 0x07) in RoborockImageParser.ROOM_PIXEL_TYPES:
+            if pixel_type & 0x07 in RoborockImageParser.ROOM_PIXEL_TYPES:
                 room_number = RoborockImageParser._get_room_number(pixel_type)
         return room_number
 

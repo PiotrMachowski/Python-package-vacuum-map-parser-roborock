@@ -19,6 +19,10 @@ class RoborockImageParser:
     MAP_INSIDE = 0xFF
     MAP_SCAN = 0x07
 
+    # Low 3 bits of a segment pixel: 1 = wall, 2 = obstacle inside a room (still part of that room),
+    # 7 = floor. The segment id is in the high 5 bits.
+    ROOM_PIXEL_TYPES = (0x02, 0x07)
+
     def __init__(self, palette: ColorsPalette, image_config: ImageConfig):
         self._colors_palette = palette
         self._image_config = image_config
@@ -65,7 +69,7 @@ class RoborockImageParser:
                         pixels[x, y] = cached_colors[SupportedColor.GREY_WALL]
                     elif obstacle == 1:
                         pixels[x, y] = cached_colors[SupportedColor.MAP_WALL_V2]
-                    elif obstacle == 7:
+                    elif obstacle in RoborockImageParser.ROOM_PIXEL_TYPES:
                         room_number = RoborockImageParser._get_room_number(pixel_type)
                         room_x = img_x + trim_left
                         room_y = img_y + trim_bottom
@@ -94,9 +98,11 @@ class RoborockImageParser:
     @staticmethod
     def get_room_at_pixel(raw_data: bytes, width: int, x: int, y: int) -> int | None:
         room_number = None
+        if width <= 0 or not 0 <= x < width or y < 0 or x + width * y >= len(raw_data):
+            return None
         pixel_type = raw_data[x + width * y]
         if pixel_type not in [RoborockImageParser.MAP_INSIDE, RoborockImageParser.MAP_SCAN]:
-            if pixel_type & 0x07 == 7:
+            if (pixel_type & 0x07) in RoborockImageParser.ROOM_PIXEL_TYPES:
                 room_number = RoborockImageParser._get_room_number(pixel_type)
         return room_number
 

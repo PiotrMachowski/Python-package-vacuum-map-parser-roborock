@@ -179,7 +179,7 @@ class RoborockMapDataParser(MapDataParser):
                         block_data_length,
                     )
 
-            block_start_position = block_start_position + block_data_length + RoborockMapDataParser._get_int8(header, 2)
+            block_start_position = block_start_position + block_data_length + block_header_length
 
         if (
             img_data is not None

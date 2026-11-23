@@ -49,6 +49,22 @@ unpacked_map = parser.unpack_map(raw_map)
 parsed_map = parser.parse(unpacked_map)
 ```
 
+### roborock.vacuum.e2
+
+The `roborock.vacuum.e2` uses its own map format (files starting with `RRSA`), which is supported by `RoborockE2MapDataParser`.
+It is used the same way:
+
+```python
+from vacuum_map_parser_roborock.map_data_parser_e2 import RoborockE2MapDataParser
+
+parser = RoborockE2MapDataParser(palette, sizes, drawables, image_config, texts)
+
+unpacked_map = parser.unpack_map(raw_map)
+parsed_map = parser.parse(unpacked_map)
+```
+
+These maps contain the map image, the charger and the vacuum position (with its angle), but no paths, zones or rooms.
+
 ## Special thanks
 
 This library wouldn't exist without following projects:
